@@ -21,7 +21,7 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            max-width: 450px;
+            max-width: 480px;
             width: 100%;
             text-align: center;
             border: 1px solid #333;
@@ -42,15 +42,22 @@
             min-height: 160px;
         }
         .label {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             color: #9ca3af;
             margin-bottom: 4px;
+            font-weight: 600;
         }
         .value {
             font-size: 1.1rem;
             font-weight: bold;
             color: #ffffff;
-            margin-bottom: 12px;
+            margin-bottom: 4px;
+        }
+        .identity {
+            font-size: 0.8rem;
+            color: #c084fc;
+            font-weight: 600;
+            margin-bottom: 14px;
         }
         .tag {
             display: inline-block;
@@ -63,10 +70,51 @@
             vertical-align: middle;
         }
         .desc {
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             color: #d1d5db;
             line-height: 1.5;
+            margin-bottom: 14px;
         }
+
+        /* 상성 영역 스타일 */
+        .affinity-section {
+            border-top: 1px dashed #444;
+            padding-top: 12px;
+            margin-top: 12px;
+        }
+        .affinity-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 6px;
+        }
+        .affinity-card {
+            background-color: #1a1a1a;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid #333;
+        }
+        .affinity-card.good { border-color: #059669; }
+        .affinity-card.bad { border-color: #dc2626; }
+        .aff-title {
+            font-size: 0.72rem;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        .good .aff-title { color: #34d399; }
+        .bad .aff-title { color: #f87171; }
+        .aff-target {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+        .aff-desc {
+            font-size: 0.72rem;
+            color: #9ca3af;
+            margin-top: 2px;
+            line-height: 1.2;
+        }
+
         button {
             background-color: #f59e0b;
             color: #121212;
@@ -91,19 +139,219 @@
     
     <div class="result-box">
         <div class="label">신성인자</div>
-        <div class="value"><span id="deity">버튼을 눌러 진단하세요</span><span id="group-tag" class="tag" style="display:none;"></span></div>
+        <div class="value">
+            <span id="deity">버튼을 눌러 진단하세요</span>
+            <span id="group-tag" class="tag" style="display:none;"></span>
+        </div>
+        <!-- 1. 신화적 정체성 표기 위치 -->
+        <div class="identity" id="identity">-</div>
         
         <div class="label">인자 능력</div>
-        <div class="value" id="ability">-</div>
+        <div class="value" id="ability" style="font-size: 0.95rem; font-weight: normal; color: #f3f4f6;">-</div>
         
-        <div class="label">주요 특징</div>
+        <div class="label" style="margin-top: 10px;">주요 특징</div>
         <div class="desc" id="feature">-</div>
+
+        <!-- 2. 상성 정보 표기 위치 -->
+        <div class="affinity-section" id="affinity-box" style="display:none;">
+            <div class="label">인자 상성 리포트</div>
+            <div class="affinity-grid">
+                <div class="affinity-card good">
+                    <div class="aff-title">상성 우수 (Good)</div>
+                    <div class="aff-target" id="good-target">-</div>
+                    <div class="aff-desc" id="good-desc">-</div>
+                </div>
+                <div class="affinity-card bad">
+                    <div class="aff-title">상성 충돌 (Bad)</div>
+                    <div class="aff-target" id="bad-target">-</div>
+                    <div class="aff-desc" id="bad-desc">-</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <button onclick="generateData()">인자 측정하기</button>
 </div>
 
 <script>
+    // 30종 신성 인자 개별 데이터 구조화
+    const deityDB = {
+        // 기술·사물 제어계
+        "헤파이스토스 (Hephaestus)": {
+            identity: "올림포스 12주신 · 대장간과 불의 신",
+            good: "아프로디테", goodDesc: "체향을 통한 인자 과부하 정화",
+            bad: "아레스", badDesc: "파괴적 공명으로 인한 인자 붕괴"
+        },
+        "아테나 (Athena)": {
+            identity: "올림포스 12주신 · 전쟁과 지혜의 여신",
+            good: "헤파이스토스", goodDesc: "전략과 설계의 완벽한 결합",
+            bad: "포세이돈", badDesc: "감정 파동으로 인한 계산 오차"
+        },
+        "프로메테우스 (Prometheus)": {
+            identity: "티탄 신족 · 문명과 예지의 신",
+            good: "헤스티아", goodDesc: "안정적인 에너지 순환 및 보호",
+            bad: "제우스", badDesc: "강한 권능 압박에 의한 인자 과충전"
+        },
+
+        // 신호·네트워크계
+        "헤르메스 (Hermes)": {
+            identity: "올림포스 12주신 · 전령과 여행자의 신",
+            good: "아폴론", goodDesc: "신호 가속 및 정보 전달 극대화",
+            bad: "하데스", badDesc: "음영 지대 진입 시 신호 차단"
+        },
+        "에코 (Echo)": {
+            identity: "오레아스 님프 · 산과 메아리의 정령",
+            good: "나르키소스", goodDesc: "안정적인 단방향 파동 수신",
+            bad: "헤라", badDesc: "신호 강제 봉인 및 언어 마비"
+        },
+        "시린크스 (Syrinx)": {
+            identity: "나이아스 님프 · 갈대와 음율의 정령",
+            good: "디오니소스", goodDesc: "감각적 음파 완화 및 리듬 공명",
+            bad: "판 (Pan)", badDesc: "집착적 파동으로 인한 공포 반응"
+        },
+
+        // 페로몬·매혹계
+        "아프로디테 (Aphrodite)": {
+            identity: "올림포스 12주신 · 미와 사랑의 여신",
+            good: "아도니스", goodDesc: "극상의 감각적 유희 및 도파민 증폭",
+            bad: "헤파이스토스", badDesc: "서늘한 무반응으로 인한 도파민 차단"
+        },
+        "디오니소스 (Dionysus)": {
+            identity: "올림포스 12주신 · 포도주와 광기의 신",
+            good: "아프로디테", goodDesc: "자율신경 이완 및 황홀경 유도",
+            bad: "아테나", badDesc: "이성적 이중 결계에 의한 감각 차단"
+        },
+        "에로스 (Eros)": {
+            identity: "사랑의 신 · 집착과 매혹의 전령",
+            good: "프시케", goodDesc: "완벽한 정서 교감 및 파동 안점",
+            bad: "아르테미스", badDesc: "거부 파동에 의한 인자 역류"
+        },
+
+        // 치유·안정계
+        "프레이야 (Freyja)": {
+            identity: "북유럽 신족 · 사랑과 풍요의 여신",
+            good: "아스클레피오스", goodDesc: "신체적·정신적 완벽한 케어",
+            bad: "아레스", badDesc: "살기 파동으로 인한 안정막 붕괴"
+        },
+        "아스클레피오스 (Asclepius)": {
+            identity: "의술과 치유의 신",
+            good: "헤스티아", goodDesc: "과부하 바이오리듬 즉시 정상화",
+            bad: "하데스", badDesc: "생체 반응 강제 저하 및 침식"
+        },
+        "헤스티아 (Hestia)": {
+            identity: "올림포스 12주신 · 화로와 가정의 여신",
+            good: "프로메테우스", goodDesc: "지속적인 온기 제공 및 열기 정화",
+            bad: "포세이돈", badDesc: "냉기 침투로 인한 온기 차단"
+        },
+
+        // 전투·강화계
+        "아레스 (Ares)": {
+            identity: "올림포스 12주신 · 광기와 전쟁의 신",
+            good: "아프로디테", goodDesc: "광기 파동을 피학적 쾌락으로 진정",
+            bad: "아테나", badDesc: "전술적 차단에 의한 자멸적 폭주"
+        },
+        "헤라클레스 (Heracles)": {
+            identity: "반신 대영웅 · 힘과 과업의 신",
+            good: "아스클레피오스", goodDesc: "근육 파괴 완화 및 즉시 복원",
+            bad: "헤라", badDesc: "신경계 강제 억압 및 출력 감소"
+        },
+        "아틀라스 (Atlas)": {
+            identity: "티탄 신족 · 하늘을 받치는 거인",
+            good: "데메테르", goodDesc: "대지 에너지 보충을 통한 내성 유지",
+            bad: "제우스", badDesc: "전자기 충격에 의한 하중 불균형"
+        },
+
+        // 은밀·감각 회피계
+        "하데스 (Hades)": {
+            identity: "명계의 왕 · 어둠과 은폐의 신",
+            good: "페르세포네", goodDesc: "음영 영역 확장 및 정신적 안점",
+            bad: "헬리오스", badDesc: "강렬한 광원에 의한 은폐 즉시 해제"
+        },
+        "다프네 (Daphne)": {
+            identity: "드라이아스 님프 · 월계수와 도피의 정령",
+            good: "헤스티아", goodDesc: "정적 속 완벽한 안식처 제공",
+            bad: "아폴론", badDesc: "추적 추적 파동에 의한 위치 강제 노출"
+        },
+        "판 (Pan)": {
+            identity: "야생과 숲의 신 · 공포(Panic)의 정령",
+            good: "디오니소스", goodDesc: "본능적 감각 교란 및 유희 증폭",
+            bad: "아테나", badDesc: "냉정한 심리 분석으로 공포 무효화"
+        },
+
+        // 원거리·동체시력계
+        "아르테미스 (Artemis)": {
+            identity: "올림포스 12주신 · 달과 수렵의 여신",
+            good: "다프네", goodDesc: "야간 시야 및 원거리 정밀도 극대화",
+            bad: "아프로디테", badDesc: "매혹 페로몬으로 인한 시야 교란"
+        },
+        "헬리오스 (Helios)": {
+            identity: "태양의 신 · 빛의 집행자",
+            good: "아폴론", goodDesc: "광학 시각 파동의 완벽한 공명",
+            bad: "하데스", badDesc: "어둠에 의한 광학 정보 흡수"
+        },
+        "니케 (Nike)": {
+            identity: "승리의 여신",
+            good: "아테나", goodDesc: "승리 판정 속도 및 선택지 적중률 증가",
+            bad: "에리스", badDesc: "혼란 파동으로 인한 선택지 오차"
+        },
+
+        // 생체·유기 활성화계
+        "데메테르 (Demeter)": {
+            identity: "올림포스 12주신 · 대지와 곡물의 여신",
+            good: "페르세포네", goodDesc: "생체 에너지를 통한 빠른 피로 회복",
+            bad: "하데스", badDesc: "생명력 억압 및 인자 가동 정지"
+        },
+        "페르세포네 (Persephone)": {
+            identity: "저승의 여왕 · 봄과 부활의 여신",
+            good: "데메테르", goodDesc: "과부하 강제 동면 및 신체 재활성",
+            bad: "아도니스", badDesc: "소유권 충돌로 인한 인자 과충전"
+        },
+        "테티스 (Thetis)": {
+            identity: "네레이스 님프 · 바다의 여신",
+            good: "포세이돈", goodDesc: "체온 수냉 조율 및 열기 즉시 차단",
+            bad: "헤파이스토스", badDesc: "고열 발생에 의한 수냉 능력 증발"
+        },
+
+        // 위계·통합 지배계
+        "제우스 (Zeus)": {
+            identity: "올림포스 최고신 · 뇌전과 권력의 신",
+            good: "헤라", goodDesc: "압도적 위계 파동 및 권위 증폭",
+            bad: "프로메테우스", badDesc: "권력 저항 파동으로 인한 전자기 방전"
+        },
+        "헤라 (Hera)": {
+            identity: "올림포스 여왕 · 혼인과 권력의 여신",
+            good: "제우스", goodDesc: "사내 조직 지배력 및 위계 확립",
+            bad: "에리스", badDesc: "불화 파동에 의한 위계 질서 균열"
+        },
+        "포세이돈 (Poseidon)": {
+            identity: "올림포스 12주신 · 바다와 지진의 신",
+            good: "테티스", goodDesc: "환경 파동 유기적 제어 및 안정",
+            bad: "엔케라두스", badDesc: "지진 파동으로 인한 해일 오작동"
+        },
+
+        // 심리 교란·추적계
+        "에리스 (Eris)": {
+            identity: "불화와 불화의 여신",
+            good: "판 (Pan)", goodDesc: "심리적 혼란 및 집단 오작동 극대화",
+            bad: "아테나", badDesc: "논리적 팩트에 의한 불화 파동 상쇄"
+        },
+        "헤카테 (Hekate)": {
+            identity: "기갈과 마술 · 교차로의 여신",
+            good: "모르페우스", goodDesc: "사각지대 감지 및 정신 침투",
+            bad: "헬리오스", badDesc: "직사 광선에 의한 은밀 마술 무효화"
+        },
+        "클리티에 (Clytie)": {
+            identity: "오케아니스 님프 · 해바라기 정령",
+            good: "아폴론", goodDesc: "대상 위치 추적 정확도 100% 달성",
+            bad: "다프네", badDesc: "은신 도피 파동으로 인한 추적 손실"
+        },
+        "아폴론 (Apollon)": {
+            identity: "올림포스 12주신 · 태양과 예지의 신",
+            good: "클리티에", goodDesc: "바이오리듬 스캔 및 예지 정확도 상승",
+            bad: "에코", badDesc: "음파 반사 파동으로 인한 스캔 교란"
+        }
+    };
+
     // 10개의 세분화된 속성 그룹별 데이터 정의
     const groups = [
         {
@@ -251,23 +499,37 @@
     ];
 
     function generateData() {
-        // 1. 세분화된 10개 속성 그룹 중 하나 무작위 선택
         const selectedGroup = groups[Math.floor(Math.random() * groups.length)];
 
-        // 2. 해당 그룹 내에서 신, 능력, 특징 무작위 추출
         const randDeity = selectedGroup.deities[Math.floor(Math.random() * selectedGroup.deities.length)];
         const randAbility = selectedGroup.abilities[Math.floor(Math.random() * selectedGroup.abilities.length)];
         const randFeature = selectedGroup.features[Math.floor(Math.random() * selectedGroup.features.length)];
 
-        // 3. 화면 업데이트
+        // 개별 신 데이터에서 신화적 정체성 및 상성 정보 불러오기
+        const deityDetail = deityDB[randDeity] || {
+            identity: "신성 인자 보유자",
+            good: "비너스 계통", goodDesc: "과부하 완화",
+            bad: "충돌 계통", badDesc: "파동 오작동"
+        };
+
+        // UI 데이터 할당
         document.getElementById('deity').innerText = randDeity;
+        document.getElementById('identity').innerText = deityDetail.identity;
         document.getElementById('ability').innerText = randAbility;
         document.getElementById('feature').innerText = randFeature;
 
-        // 그룹 태그 표시
+        // 상성 UI 업데이트
+        document.getElementById('good-target').innerText = deityDetail.good;
+        document.getElementById('good-desc').innerText = deityDetail.goodDesc;
+        document.getElementById('bad-target').innerText = deityDetail.bad;
+        document.getElementById('bad-desc').innerText = deityDetail.badDesc;
+
+        // 그룹 태그 및 상성 영역 노출
         const tagElem = document.getElementById('group-tag');
         tagElem.innerText = selectedGroup.name;
         tagElem.style.display = 'inline-block';
+
+        document.getElementById('affinity-box').style.display = 'block';
     }
 </script>
 
