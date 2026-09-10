@@ -1,12 +1,9 @@
-기존 사내 시스템 디자인과統一感을 맞추면서, 이전 코드에서 다듬었던 **인자/계통 1:1 매칭 구조**와 버튼 가시성 향상(초록색 복사 버튼)까지 똑같이 반영한 수정 코드입니다.
-
-```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>비너스 그룹 신성인자 진단 시스템</title>
+    <title>VENUS GROUP - 신성인자 진단 시스템</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -17,165 +14,111 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            padding: 20px 10px;
         }
-        .container {
-            background-color: #18181c;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-            max-width: 480px;
+        
+        .diag-card {
+            background-color: #1e1e1e;
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            max-width: 440px;
             width: 100%;
             text-align: center;
-            border: 1px solid #2a2a32;
+            border: 1px solid #2d2d35;
         }
-        h1 {
-            font-size: 1.35rem;
-            color: #f3f4f6;
-            margin-bottom: 25px;
-            letter-spacing: -0.5px;
+
+        .header-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #f59e0b;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+        
+        .diag-title {
+            font-size: 1.3rem;
+            color: #ffffff;
+            margin-bottom: 20px;
             font-weight: 700;
         }
+
         .result-box {
-            background-color: #222228;
+            background-color: #2a2a2a;
             border-left: 4px solid #f59e0b;
-            padding: 20px;
+            padding: 16px;
             border-radius: 6px;
             text-align: left;
-            margin-bottom: 25px;
-            min-height: 160px;
-            border: 1px solid #2d2d38;
-            border-left-width: 4px;
-        }
-        .label {
-            font-size: 0.8rem;
-            color: #9ca3af;
-            margin-bottom: 4px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .value {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #ffffff;
-            margin-bottom: 4px;
-        }
-        .identity {
-            font-size: 0.8rem;
-            color: #c084fc;
-            font-weight: 600;
-            margin-bottom: 14px;
-        }
-        .tag {
-            display: inline-block;
-            font-size: 0.75rem;
-            background-color: #374151;
-            color: #f59e0b;
-            padding: 2px 8px;
-            border-radius: 4px;
-            margin-left: 6px;
-            vertical-align: middle;
-            font-weight: 600;
-        }
-        .desc {
-            font-size: 0.9rem;
-            color: #d1d5db;
-            line-height: 1.5;
-            margin-bottom: 14px;
+            margin-bottom: 20px;
+            min-height: 140px;
         }
 
-        /* 상성 영역 스타일 */
-        .affinity-section {
-            border-top: 1px dashed #374151;
-            padding-top: 14px;
-            margin-top: 14px;
+        .diag-label { font-size: 0.8rem; color: #9ca3af; margin-bottom: 4px; font-weight: 600; }
+        .diag-value { font-size: 1.05rem; font-weight: bold; color: #ffffff; margin-bottom: 4px; }
+        .diag-identity { font-size: 0.78rem; color: #c084fc; font-weight: 600; margin-bottom: 12px; }
+        .diag-tag {
+            display: inline-block; font-size: 0.72rem; background-color: #374151;
+            color: #f59e0b; padding: 2px 6px; border-radius: 4px; margin-left: 6px; vertical-align: middle;
         }
-        .affinity-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 8px;
-        }
-        .affinity-card {
-            background-color: #18181c;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #2d2d38;
-        }
+        .diag-desc { font-size: 0.88rem; color: #d1d5db; line-height: 1.4; margin-bottom: 12px; }
+        
+        .affinity-section { border-top: 1px dashed #444; padding-top: 10px; margin-top: 10px; }
+        .affinity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
+        .affinity-card { background-color: #1a1a1a; padding: 8px; border-radius: 6px; border: 1px solid #333; }
         .affinity-card.good { border-color: #059669; }
         .affinity-card.bad { border-color: #dc2626; }
-        .aff-title {
-            font-size: 0.72rem;
-            font-weight: bold;
-            margin-bottom: 3px;
-        }
+        .aff-title { font-size: 0.7rem; font-weight: bold; margin-bottom: 2px; }
         .good .aff-title { color: #34d399; }
         .bad .aff-title { color: #f87171; }
-        .aff-target {
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: #ffffff;
-        }
-        .aff-desc {
-            font-size: 0.72rem;
-            color: #9ca3af;
-            margin-top: 3px;
-            line-height: 1.3;
-        }
+        .aff-target { font-size: 0.82rem; font-weight: bold; color: #ffffff; }
+        .aff-desc { font-size: 0.7rem; color: #9ca3af; margin-top: 2px; line-height: 1.2; }
 
-        /* 버튼 그룹 스타일 */
-        .btn-group {
-            display: flex;
-            gap: 10px;
+        .dept-recommend-section {
+            border-top: 1px dashed #444;
+            padding-top: 10px;
+            margin-top: 12px;
         }
-        button {
-            border: none;
-            padding: 14px;
+        .dept-recommend-val {
             font-size: 0.95rem;
             font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            flex: 1;
+            color: #f59e0b;
+            margin-top: 4px;
         }
-        .btn-main {
-            background-color: #f59e0b;
-            color: #0f0f12;
+
+        .diag-btn-group { display: flex; gap: 8px; }
+        .diag-btn {
+            border: none; padding: 12px; font-size: 0.9rem; font-weight: bold;
+            border-radius: 6px; cursor: pointer; transition: background 0.2s; flex: 1;
         }
-        .btn-main:hover {
-            background-color: #d97706;
-        }
-        .btn-copy {
-            background-color: #10b981;
-            color: #ffffff;
-        }
-        .btn-copy:hover {
-            background-color: #059669;
-        }
+        .btn-main { background-color: #f59e0b; color: #121212; }
+        .btn-main:hover { background-color: #d97706; }
+        .btn-copy { background-color: #374151; color: #e0e0e0; border: 1px solid #4b5563; }
+        .btn-copy:hover { background-color: #4b5563; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>🏛️ 비너스 그룹 인자 진단 시스템 🏛️</h1>
+<div class="diag-card">
+    <div class="header-title">🏛️ VENUS INTRANET</div>
+    <div class="diag-title">신성인자 진단 시스템</div>
     
     <div class="result-box">
-        <div class="label">신성인자</div>
-        <div class="value">
+        <div class="diag-label">신성인자</div>
+        <div class="diag-value">
             <span id="deity">버튼을 눌러 진단하세요</span>
-            <span id="group-tag" class="tag" style="display:none;"></span>
+            <span id="group-tag" class="diag-tag" style="display:none;"></span>
         </div>
-        <div class="identity" id="identity">-</div>
+        <div class="diag-identity" id="identity">-</div>
         
-        <div class="label">인자 능력</div>
-        <div class="value" id="ability" style="font-size: 0.92rem; font-weight: normal; color: #f3f4f6;">-</div>
+        <div class="diag-label">인자 능력</div>
+        <div class="diag-value" id="ability" style="font-size: 0.88rem; font-weight: normal; color: #f3f4f6;">-</div>
         
-        <div class="label" style="margin-top: 10px;">주요 특징</div>
-        <div class="desc" id="feature">-</div>
+        <div class="diag-label" style="margin-top: 10px;">주요 특징</div>
+        <div class="diag-desc" id="feature">-</div>
 
+        <!-- 인자 상성 리포트 -->
         <div class="affinity-section" id="affinity-box" style="display:none;">
-            <div class="label">인자 상성 리포트</div>
+            <div class="diag-label">인자 상성 리포트</div>
             <div class="affinity-grid">
                 <div class="affinity-card good">
                     <div class="aff-title">상성 우수 (Good)</div>
@@ -189,342 +132,104 @@
                 </div>
             </div>
         </div>
+
+        <!-- 추천 배치 부서 -->
+        <div class="dept-recommend-section" id="dept-box" style="display:none;">
+            <div class="diag-label">추천 배치 부서</div>
+            <div class="dept-recommend-val" id="recommend-dept">-</div>
+        </div>
     </div>
 
-    <!-- 버튼 영역 (측정하기 + 내용복사) -->
-    <div class="btn-group">
-        <button class="btn-main" onclick="generateData()">인자 측정하기</button>
-        <button class="btn-copy" id="copy-btn" onclick="copyResult()">내용복사</button>
+    <div class="diag-btn-group">
+        <button class="diag-btn btn-main" onclick="generateData()">인자 측정하기</button>
+        <button class="diag-btn btn-copy" id="copy-btn" onclick="copyResult()">내용복사</button>
     </div>
 </div>
 
 <script>
-    // 인자 데이터 베이스 (1:1 고정 매칭)
-    const deityList = [
-        // 계통 1: 기술·사물 제어계
-        {
-            deity: "헤파이스토스 (Hephaestus)",
-            group: "기술·사물 제어계",
-            identity: "올림포스 12주신 · 대장간과 불의 신",
-            ability: "모든 기술 체계 및 사물 구조 정밀 통찰형 인자",
-            feature: "시스템이나 물건의 미세한 구조적 균열을 즉시 파악해 냄.",
-            good: "아프로디테", goodDesc: "체향을 통한 인자 과부하 정화",
-            bad: "아레스", badDesc: "파괴적 공명으로 인한 인자 붕괴"
-        },
-        {
-            deity: "아테나 (Athena)",
-            group: "기술·사물 제어계",
-            identity: "올림포스 12주신 · 전쟁과 지혜의 여신",
-            ability: "초감각적 공간·구조 인지 및 정밀 제어형 인자",
-            feature: "방대한 도면이나 데이터를 보는 즉시 입체적 청사진으로 재구성함.",
-            good: "헤파이스토스", goodDesc: "전략과 설계의 완벽한 결합",
-            bad: "포세이돈", badDesc: "감정 파동으로 인한 계산 오차"
-        },
-        {
-            deity: "프로메테우스 (Prometheus)",
-            group: "기술·사물 제어계",
-            identity: "티탄 신족 · 문명과 예지의 신",
-            ability: "직관적 결함 감지 및 과부하 내성형 인자",
-            feature: "남들이 보지 못하는 치명적 시스템 결함을 동물적으로 감지함.",
-            good: "헤스티아", goodDesc: "안정적인 에너지 순환 및 보호",
-            bad: "제우스", badDesc: "강한 권능 압박에 의한 인자 과충전"
-        },
+    // 진단 데이터베이스
+    const deityDB = {
+        "헤파이스토스 (Hephaestus)": { identity: "올림포스 12주신 · 대장간과 불의 신", good: "아프로디테", goodDesc: "체향을 통한 인자 과부하 정화", bad: "아레스", badDesc: "파괴적 공명으로 인한 인자 붕괴" },
+        "아테나 (Athena)": { identity: "올림포스 12주신 · 전쟁과 지혜의 여신", good: "헤파이스토스", goodDesc: "전략과 설계의 완벽한 결합", bad: "포세이돈", badDesc: "감정 파동으로 인한 계산 오차" },
+        "프로메테우스 (Prometheus)": { identity: "티탄 신족 · 문명과 예지의 신", good: "헤스티아", goodDesc: "안정적인 에너지 순환 및 보호", bad: "제우스", badDesc: "강한 권능 압박에 의한 인자 과충전" },
+        "헤르메스 (Hermes)": { identity: "올림포스 12주신 · 전령과 여행자의 신", good: "아폴론", goodDesc: "신호 가속 및 정보 전달 극대화", bad: "하데스", badDesc: "음영 지대 진입 시 신호 차단" },
+        "에코 (Echo)": { identity: "오레아스 님프 · 산과 메아리의 정령", good: "나르키소스", goodDesc: "안정적인 단방향 파동 수신", bad: "헤라", badDesc: "신호 강제 봉인 및 언어 마비" },
+        "시린크스 (Syrinx)": { identity: "나이아스 님프 · 갈대와 음율의 정령", good: "디오니소스", goodDesc: "감각적 음파 완화 및 리듬 공명", bad: "판 (Pan)", badDesc: "집착적 파동으로 인한 공포 반응" },
+        "아프로디테 (Aphrodite)": { identity: "올림포스 12주신 · 미와 사랑의 여신", good: "아도니스", goodDesc: "극상의 감각적 유희 및 도파민 증폭", bad: "헤파이스토스", badDesc: "서늘한 무반응으로 인한 도파민 차단" },
+        "디오니소스 (Dionysus)": { identity: "올림포스 12주신 · 포도주와 광기의 신", good: "아프로디테", goodDesc: "자율신경 이완 및 황홀경 유도", bad: "아테나", badDesc: "이성적 이중 결계에 의한 감각 차단" },
+        "에로스 (Eros)": { identity: "사랑의 신 · 집착과 매혹의 전령", good: "프시케", goodDesc: "완벽한 정서 교감 및 파동 안점", bad: "아르테미스", badDesc: "거부 파동에 의한 인자 역류" },
+        "프레이야 (Freyja)": { identity: "북유럽 신족 · 사랑과 풍요의 여신", good: "아스클레피오스", goodDesc: "신체적·정신적 완벽한 케어", bad: "아레스", badDesc: "살기 파동으로 인한 안정막 붕괴" },
+        "아스클레피오스 (Asclepius)": { identity: "의술과 치유의 신", good: "헤스티아", goodDesc: "과부하 바이오리듬 즉시 정상화", bad: "하데스", badDesc: "생체 반응 강제 저하 및 침식" },
+        "헤스티아 (Hestia)": { identity: "올림포스 12주신 · 화로와 가정의 여신", good: "프로메테우스", goodDesc: "지속적인 온기 제공 및 열기 정화", bad: "포세이돈", badDesc: "냉기 침투로 인한 온기 차단" },
+        "아레스 (Ares)": { identity: "올림포스 12주신 · 광기와 전쟁의 신", good: "아프로디테", goodDesc: "광기 파동을 피학적 쾌락으로 진정", bad: "아테나", badDesc: "전술적 차단에 의한 자멸적 폭주" },
+        "헤라클레스 (Heracles)": { identity: "반신 대영웅 · 힘과 과업의 신", good: "아스클레피오스", goodDesc: "근육 파괴 완화 및 즉시 복원", bad: "헤라", badDesc: "신경계 강제 억압 및 출력 감소" },
+        "아틀라스 (Atlas)": { identity: "티탄 신족 · 하늘을 받치는 거인", good: "데메테르", goodDesc: "대지 에너지 보충을 통한 내성 유지", bad: "제우스", badDesc: "전자기 충격에 의한 하중 불균형" },
+        "하데스 (Hades)": { identity: "명계의 왕 · 어둠과 은폐의 신", good: "페르세포네", goodDesc: "음영 영역 확장 및 정신적 안점", bad: "헬리오스", badDesc: "강렬한 광원에 의한 은폐 즉시 해제" },
+        "다프네 (Daphne)": { identity: "드라이아스 님프 · 월계수와 도피의 정령", good: "헤스티아", goodDesc: "정적 속 완벽한 안식처 제공", bad: "아폴론", badDesc: "추적 파동에 의한 위치 강제 노출" },
+        "판 (Pan)": { identity: "야생과 숲의 신 · 공포(Panic)의 정령", good: "디오니소스", goodDesc: "본능적 감각 교란 및 유희 증폭", bad: "아테나", badDesc: "냉정한 심리 분석으로 공포 무효화" },
+        "아르테미스 (Artemis)": { identity: "올림포스 12주신 · 달과 수렵의 여신", good: "다프네", goodDesc: "야간 시야 및 원거리 정밀도 극대화", bad: "아프로디테", badDesc: "매혹 페로몬으로 인한 시야 교란" },
+        "헬리오스 (Helios)": { identity: "태양의 신 · 빛의 집행자", good: "아폴론", goodDesc: "광학 시각 파동의 완벽한 공명", bad: "하데스", badDesc: "어둠에 의한 광학 정보 흡수" },
+        "니케 (Nike)": { identity: "승리의 여신", good: "아테나", goodDesc: "승리 판정 속도 및 선택지 적중률 증가", bad: "에리스", badDesc: "혼란 파동으로 인한 선택지 오차" },
+        "데메테르 (Demeter)": { identity: "올림포스 12주신 · 대지와 곡물의 여신", good: "페르세포네", goodDesc: "생체 에너지를 통한 빠른 피로 회복", bad: "하데스", badDesc: "생명력 억압 및 인자 가동 정지" },
+        "페르세포네 (Persephone)": { identity: "저승의 여왕 · 봄과 부활의 여신", good: "데메테르", goodDesc: "과부하 강제 동면 및 신체 재활성", bad: "아도니스", badDesc: "소유권 충돌로 인한 인자 과충전" },
+        "테티스 (Thetis)": { identity: "네레이스 님프 · 바다의 여신", good: "포세이돈", goodDesc: "체온 수냉 조율 및 열기 즉시 차단", bad: "헤파이스토스", badDesc: "고열 발생에 의한 수냉 능력 증발" },
+        "제우스 (Zeus)": { identity: "올림포스 최고신 · 뇌전과 권력의 신", good: "헤라", goodDesc: "압도적 위계 파동 및 권위 증폭", bad: "프로메테우스", badDesc: "권력 저항 파동으로 인한 전자기 방전" },
+        "헤라 (Hera)": { identity: "올림포스 여왕 · 혼인과 권력의 여신", good: "제우스", goodDesc: "사내 조직 지배력 및 위계 확립", bad: "에리스", badDesc: "불화 파동에 의한 위계 질서 균열" },
+        "포세이돈 (Poseidon)": { identity: "올림포스 12주신 · 바다와 지진의 신", good: "테티스", goodDesc: "환경 파동 유기적 제어 및 안정", bad: "엔케라두스", badDesc: "지진 파동으로 인한 해일 오작동" },
+        "에리스 (Eris)": { identity: "불화와 불화의 여신", good: "판 (Pan)", goodDesc: "심리적 혼란 및 집단 오작동 극대화", bad: "아테나", badDesc: "논리적 팩트에 의한 불화 파동 상쇄" },
+        "헤카테 (Hekate)": { identity: "기갈과 마술 · 교차로의 여신", good: "모르페우스", goodDesc: "사각지대 감지 및 정신 침투", bad: "헬리오스", badDesc: "직사 광선에 의한 은밀 마술 무효화" },
+        "클리티에 (Clytie)": { identity: "오케아니스 님프 · 해바라기 정령", good: "아폴론", goodDesc: "대상 위치 추적 정확도 100% 달성", bad: "다프네", badDesc: "은신 도피 파동으로 인한 추적 손실" },
+        "아폴론 (Apollon)": { identity: "올림포스 12주신 · 태양과 예지의 신", good: "클리티에", goodDesc: "바이오리듬 스캔 및 예지 정확도 상승", bad: "에코", badDesc: "음파 반사 파동으로 인한 스캔 교란" }
+    };
 
-        // 계통 2: 신호·네트워크계
-        {
-            deity: "헤르메스 (Hermes)",
-            group: "신호·네트워크계",
-            identity: "올림포스 12주신 · 전령과 여행자의 신",
-            ability: "신체 신경 가속 및 파동·신호 감응형 인자",
-            feature: "상대방의 미세한 두근거림이나 심장박동을 피부 감각으로 읽음.",
-            good: "아폴론", goodDesc: "신호 가속 및 정보 전달 극대화",
-            bad: "하데스", badDesc: "음영 지대 진입 시 신호 차단"
-        },
-        {
-            deity: "에코 (Echo)",
-            group: "신호·네트워크계",
-            identity: "오레아스 님프 · 산과 메아리의 정령",
-            ability: "상대의 음성을 그대로 복사해 재현하는 음성형 인자",
-            feature: "들었던 소리나 데이터 파형을 그대로 기억하여 완벽히 재현함.",
-            good: "나르키소스", goodDesc: "안정적인 단방향 파동 수신",
-            bad: "헤라", badDesc: "신호 강제 봉인 및 언어 마비"
-        },
-        {
-            deity: "시린크스 (Syrinx)",
-            group: "신호·네트워크계",
-            identity: "나이아스 님프 · 갈대와 음율의 정령",
-            ability: "미세한 공기 흐름을 신체로 읽어내는 감응형 인자",
-            feature: "공기의 미세한 유동을 피부로 느껴 미세한 신호 전달 경로를 파악함.",
-            good: "디오니소스", goodDesc: "감각적 음파 완화 및 리듬 공명",
-            bad: "판 (Pan)", badDesc: "집착적 파동으로 인한 공포 반응"
-        },
-
-        // 계통 3: 페로몬·매혹계
-        {
-            deity: "아프로디테 (Aphrodite)",
-            group: "페로몬·매혹계",
-            identity: "올림포스 12주신 · 미와 사랑의 여신",
-            ability: "타인 감각 지배 및 최상위 페로몬 유도형 인자",
-            feature: "특유의 치명적인 체향으로 타인의 감정을 순간적으로 동요시킴.",
-            good: "아도니스", goodDesc: "극상의 감각적 유희 및 도파민 증폭",
-            bad: "헤파이스토스", badDesc: "서늘한 무반응으로 인한 도파민 차단"
-        },
-        {
-            deity: "디오니소스 (Dionysus)",
-            group: "페로몬·매혹계",
-            identity: "올림포스 12주신 · 포도주와 광기의 신",
-            ability: "신경계 자율 자극 및 감각 증폭형 인자",
-            feature: "타인의 감각을 마비시키거나 순간적으로 극도의 흥분 상태로 몰아넣음.",
-            good: "아프로디테", goodDesc: "자율신경 이완 및 황홀경 유도",
-            bad: "아테나", badDesc: "이성적 이중 결계에 의한 감각 차단"
-        },
-        {
-            deity: "에로스 (Eros)",
-            group: "페로몬·매혹계",
-            identity: "사랑의 신 · 집착과 매혹의 전령",
-            ability: "특정 대상에게 감정적 애착을 유도하는 페로몬형 인자",
-            feature: "상대에게 정서적 안도감과 극도의 애착을 형성하게 만듦.",
-            good: "프시케", goodDesc: "완벽한 정서 교감 및 파동 안점",
-            bad: "아르테미스", badDesc: "거부 파동에 의한 인자 역류"
-        },
-
-        // 계통 4: 치유·안정계
-        {
-            deity: "프레이야 (Freyja)",
-            group: "치유·안정계",
-            identity: "북유럽 신족 · 사랑과 풍요의 여신",
-            ability: "감정 완화 페로몬 및 신체 온기 유도형 인자",
-            feature: "특유의 온기와 체향으로 상대의 인자 과부하 상태를 유일하게 완화시킴.",
-            good: "아스클레피오스", goodDesc: "신체적·정신적 완벽한 케어",
-            bad: "아레스", badDesc: "살기 파동으로 인한 안정막 붕괴"
-        },
-        {
-            deity: "아스클레피오스 (Asclepius)",
-            group: "치유·안정계",
-            identity: "의술과 치유의 신",
-            ability: "신체 병목 및 이상 증상 즉각 진단형 인자",
-            feature: "상대방의 신체 이상이나 인자 오작동 원인을 즉시 진단해 냄.",
-            good: "헤스티아", goodDesc: "과부하 바이오리듬 즉시 정상화",
-            bad: "하데스", badDesc: "생체 반응 강제 저하 및 침식"
-        },
-        {
-            deity: "헤스티아 (Hestia)",
-            group: "치유·안정계",
-            identity: "올림포스 12주신 · 화로와 가정의 여신",
-            ability: "환경 체온 유지 및 신체 안정화형 인자",
-            feature: "차가운 환경에서도 자율 체온을 일정하게 유지하며 주위를 안정시킴.",
-            good: "프로메테우스", goodDesc: "지속적인 온기 제공 및 열기 정화",
-            bad: "포세이돈", badDesc: "냉기 침투로 인한 온기 차단"
-        },
-
-        // 계통 5: 전투·강화계
-        {
-            deity: "아레스 (Ares)",
-            group: "전투·강화계",
-            identity: "올림포스 12주신 · 광기와 전쟁의 신",
-            ability: "신체 아드레날린 및 근육 파괴 내성 극대화형 인자",
-            feature: "위기 상황일수록 고통을 잊고 폭발적인 피지컬을 발휘함.",
-            good: "아프로디테", goodDesc: "광기 파동을 피학적 쾌락으로 진정",
-            bad: "아테나", badDesc: "전술적 차단에 의한 자멸적 폭주"
-        },
-        {
-            deity: "헤라클레스 (Heracles)",
-            group: "전투·강화계",
-            identity: "반신 대영웅 · 힘과 과업의 신",
-            ability: "신체 한계 수치 일시적 도핑형 인자",
-            feature: "순간적인 신체 오버클럭을 통해 한계를 뛰어넘는 힘을 냄.",
-            good: "아스클레피오스", goodDesc: "근육 파괴 완화 및 즉시 복원",
-            bad: "헤라", badDesc: "신경계 강제 억압 및 출력 감소"
-        },
-        {
-            deity: "아틀라스 (Atlas)",
-            group: "전투·강화계",
-            identity: "티탄 신족 · 하늘을 받치는 거인",
-            ability: "신체 고중량 압박 견딤 및 하중 분산형 인자",
-            feature: "상당한 신체적 과부하와 물리적 압박에도 동요 없이 견뎌냄.",
-            good: "데메테르", goodDesc: "대지 에너지 보충을 통한 내성 유지",
-            bad: "제우스", badDesc: "전자기 충격에 의한 하중 불균형"
-        },
-
-        // 계통 6: 은밀·감각 회피계
-        {
-            deity: "하데스 (Hades)",
-            group: "은밀·감각 회피계",
-            identity: "명계의 왕 · 어둠과 은폐의 신",
-            ability: "신체 은폐 및 시각 인식 차단형 인자",
-            feature: "자신의 존재감을 순간적으로 지워 무의식적 시선 추적을 피함.",
-            good: "페르세포네", goodDesc: "음영 영역 확장 및 정신적 안점",
-            bad: "헬리오스", badDesc: "강렬한 광원에 의한 은폐 즉시 해제"
-        },
-        {
-            deity: "다프네 (Daphne)",
-            group: "은밀·감각 회피계",
-            identity: "드라이아스 님프 · 월계수와 도피의 정령",
-            ability: "타인의 시선을 신체적으로 회피하는 본능형 인자",
-            feature: "자신에게 쏠리는 타인의 위압적 시선을 자연스럽게 튕겨냄.",
-            good: "헤스티아", goodDesc: "정적 속 완벽한 안식처 제공",
-            bad: "아폴론", badDesc: "추적 파동에 의한 위치 강제 노출"
-        },
-        {
-            deity: "판 (Pan)",
-            group: "은밀·감각 회피계",
-            identity: "야생과 숲의 신 · 공포(Panic)의 정령",
-            ability: "초음파 및 미세 음파 감지형 인자",
-            feature: "미세한 소리나 진동의 원인지를 직관적으로 찾아냄.",
-            good: "디오니소스", goodDesc: "본능적 감각 교란 및 유희 증폭",
-            bad: "아테나", badDesc: "냉정한 심리 분석으로 공포 무효화"
-        },
-
-        // 계통 7: 원거리·동체시력계
-        {
-            deity: "아르테미스 (Artemis)",
-            group: "원거리·동체시력계",
-            identity: "올림포스 12주신 · 달과 수렵의 여신",
-            ability: "동체시력 및 원거리 신체 직관 강화형 인자",
-            feature: "어두운 곳이나 복잡한 구조 속에서도 정밀한 목표물을 타격함.",
-            good: "다프네", goodDesc: "야간 시야 및 원거리 정밀도 극대화",
-            bad: "아프로디테", badDesc: "매혹 페로몬으로 인한 시야 교란"
-        },
-        {
-            deity: "헬리오스 (Helios)",
-            group: "원거리·동체시력계",
-            identity: "태양의 신 · 빛의 집행자",
-            ability: "시야 내 빛을 흡수 및 반사하는 광학 감각형 인자",
-            feature: "주변 시각 데이터를 극대화하여 미세한 미동도 놓치지 않음.",
-            good: "아폴론", goodDesc: "광학 시각 파동의 완벽한 공명",
-            bad: "하데스", badDesc: "어둠에 의한 광학 정보 흡수"
-        },
-        {
-            deity: "니케 (Nike)",
-            group: "원거리·동체시력계",
-            identity: "승리의 여신",
-            ability: "승패의 기류를 감지하는 순발력 강화형 인자",
-            feature: "경쟁 상황에서 승리 가능성이 가장 높은 선택지를 직관적으로 파악함.",
-            good: "아테나", goodDesc: "승리 판정 속도 및 선택지 적중률 증가",
-            bad: "에리스", badDesc: "혼란 파동으로 인한 선택지 오차"
-        },
-
-        // 계통 8: 생체·유기 활성화계
-        {
-            deity: "데메테르 (Demeter)",
-            group: "생체·유기 활성화계",
-            identity: "올림포스 12주신 · 대지와 곡물의 여신",
-            ability: "생체 에너지를 통한 유기물 활성화형 인자",
-            feature: "식물이나 세포 생체 에너지를 미세하게 촉진시킬 수 있음.",
-            good: "페르세포네", goodDesc: "생체 에너지를 통한 빠른 피로 회복",
-            bad: "하데스", badDesc: "생명력 억압 및 인자 가동 정지"
-        },
-        {
-            deity: "페르세포네 (Persephone)",
-            group: "생체·유기 활성화계",
-            identity: "저승의 여왕 · 봄과 부활의 여신",
-            ability: "동면·치유 주기를 유도하는 신체 조율형 인자",
-            feature: "상대의 극심한 인자 과부하 상태를 일시적으로 동면시키듯 가라앉힘.",
-            good: "데메테르", goodDesc: "과부하 강제 동면 및 신체 재활성",
-            bad: "아도니스", badDesc: "소유권 충돌로 인한 인자 과충전"
-        },
-        {
-            deity: "테티스 (Thetis)",
-            group: "생체·유기 활성화계",
-            identity: "네레이스 님프 · 바다의 여신",
-            ability: "체온 동결 및 피부 내구성 강화형 인자",
-            feature: "마찰열이나 과부하 열기를 순식간에 차갑게 식혀버림.",
-            good: "포세이돈", goodDesc: "체온 수냉 조율 및 열기 즉시 차단",
-            bad: "헤파이스토스", badDesc: "고열 발생에 의한 수냉 능력 증발"
-        },
-
-        // 계통 9: 위계·통합 지배계
-        {
-            deity: "제우스 (Zeus)",
-            group: "위계·통합 지배계",
-            identity: "올림포스 최고신 · 뇌전과 권력의 신",
-            ability: "전자기파 직관 및 신체 반응 가속형 인자",
-            feature: "찰나의 순간에 고전압 전자기파와 유사한 반응 속도를 끌어올림.",
-            good: "헤라", goodDesc: "압도적 위계 파동 및 권위 증폭",
-            bad: "프로메테우스", badDesc: "권력 저항 파동으로 인한 전자기 방전"
-        },
-        {
-            deity: "헤라 (Hera)",
-            group: "위계·통합 지배계",
-            identity: "올림포스 여왕 · 혼인과 권력의 여신",
-            ability: "타인의 계급·지배 구조 인지 및 권위 부여형 인자",
-            feature: "사내의 미세한 위계 질서와 조직 구조를 직관적으로 파악함.",
-            good: "제우스", goodDesc: "사내 조직 지배력 및 위계 확립",
-            bad: "에리스", badDesc: "불화 파동에 의한 위계 질서 균열"
-        },
-        {
-            deity: "포세이돈 (Poseidon)",
-            group: "위계·통합 지배계",
-            identity: "올림포스 12주신 · 바다와 지진의 신",
-            ability: "유체 흐름 및 환경 파동 감응형 인자",
-            feature: "주변 환경의 기압이나 수분 변화를 피부 감각으로 감지함.",
-            good: "테티스", goodDesc: "환경 파동 유기적 제어 및 안정",
-            bad: "엔케라두스", badDesc: "지진 파동으로 인한 해일 오작동"
-        },
-
-        // 계통 10: 심리 교란·추적계
-        {
-            deity: "에리스 (Eris)",
-            group: "심리 교란·추적계",
-            identity: "불화와 불화의 여신",
-            ability: "상대의 심리적 불안을 유도하는 감각 교란형 인자",
-            feature: "집단 내의 미세한 불화나 논리적 허점을 재빠르게 포착함.",
-            good: "판 (Pan)", goodDesc: "심리적 혼란 및 집단 오작동 극대화",
-            bad: "아테나", badDesc: "논리적 팩트에 의한 불화 파동 상쇄"
-        },
-        {
-            deity: "헤카테 (Hekate)",
-            group: "심리 교란·추적계",
-            identity: "기갈과 마술 · 교차로의 여신",
-            ability: "미세한 사각지대를 감지하는 감각 확장형 인자",
-            feature: "직관적으로 시스템의 숨겨진 백도어나 오류 위치를 찾아냄.",
-            good: "모르페우스", goodDesc: "사각지대 감지 및 정신 침투",
-            bad: "헬리오스", badDesc: "직사 광선에 의한 은밀 마술 무효화"
-        },
-        {
-            deity: "클리티에 (Clytie)",
-            group: "심리 교란·추적계",
-            identity: "오케아니스 님프 · 해바라기 정령",
-            ability: "특정 대상의 위치를 시각적으로 감지하는 추적형 인자",
-            feature: "특정 대상의 이동 경로나 신체 잔향을 끊임없이 추적함.",
-            good: "아폴론", goodDesc: "대상 위치 추적 정확도 100% 달성",
-            bad: "다프네", badDesc: "은신 도피 파동으로 인한 추적 손실"
-        },
-        {
-            deity: "아폴론 (Apollon)",
-            group: "심리 교란·추적계",
-            identity: "올림포스 12주신 · 태양과 예지의 신",
-            ability: "생체 바이오리듬 시각화 및 정교한 예지형 인자",
-            feature: "상대의 미세한 체온 및 맥박 변화를 눈으로 스캔하듯 읽어냄.",
-            good: "클리티에", goodDesc: "바이오리듬 스캔 및 예지 정확도 상승",
-            bad: "에코", badDesc: "음파 반사 파동으로 인한 스캔 교란"
-        }
+    // 계통별 조직도 기반 추천 배치 부서 매핑
+    const groups = [
+        { name: "기술·사물 제어계", dept: "⚙️ 기술개발총괄본부", deities: ["헤파이스토스 (Hephaestus)", "아테나 (Athena)", "프로메테우스 (Prometheus)"], abilities: ["모든 기술 체계 및 사물 구조 정밀 통찰형 인자", "초감각적 공간·구조 인지 및 정밀 제어형 인자", "직관적 결함 감지 및 과부하 내성형 인자"], features: ["시스템이나 물건의 미세한 구조적 균열을 즉시 파악해 냄.", "방대한 도면이나 데이터를 보는 즉시 입체적 청사진으로 재구성함.", "남들이 보지 못하는 치명적 시스템 결함을 동물적으로 감지함."] },
+        { name: "신호·네트워크계", dept: "⚙️ 기술개발총괄본부", deities: ["헤르메스 (Hermes)", "에코 (Echo)", "시린크스 (Syrinx)"], abilities: ["신체 신경 가속 및 파동·신호 감응형 인자", "상대의 음성을 그대로 복사해 재현하는 음성형 인자", "미세한 공기 흐름을 신체로 읽어내는 감응형 인자"], features: ["상대방의 미세한 두근거림이나 심장박동을 피부 감각으로 읽음.", "들었던 소리나 데이터 파형을 그대로 기억하여 완벽히 재현함.", "공기의 미세한 유동을 피부로 느껴 미세한 신호 전달 경로를 파악함."] },
+        { name: "페로몬·매혹계", dept: "💄 뷰티·패션 사업부", deities: ["아프로디테 (Aphrodite)", "디오니소스 (Dionysus)", "에로스 (Eros)"], abilities: ["타인 감각 지배 및 최상위 페로몬 유도형 인자", "신경계 자율 자극 및 감각 증폭형 인자", "특정 대상에게 감정적 애착을 유도하는 페로몬형 인자"], features: ["특유의 치명적인 체향으로 타인의 감정을 순간적으로 동요시킴.", "타인의 감각을 마비시키거나 순간적으로 극도의 흥분 상태로 몰아넣음.", "상대에게 정서적 안도감과 극도의 애착을 형성하게 만듦."] },
+        { name: "치유·안정계", dept: "🏢 CEO직속 전속 인자케어팀", deities: ["프레이야 (Freyja)", "아스클레피오스 (Asclepius)", "헤스티아 (Hestia)"], abilities: ["감정 완화 페로몬 및 신체 온기 유도형 인자", "신체 병목 및 이상 증상 즉각 진단형 인자", "환경 체온 유지 및 신체 안정화형 인자"], features: ["특유의 온기와 체향으로 상대의 인자 과부하 상태를 유일하게 완화시킴.", "상대방의 신체 이상이나 인자 오작동 원인을 즉시 진단해 냄.", "차가운 환경에서도 자율 체온을 일정하게 유지하며 주위를 안정시킴."] },
+        { name: "전투·강화계", dept: "🏢 CEO직속 전속 인자케어팀", deities: ["아레스 (Ares)", "헤라클레스 (Heracles)", "아틀라스 (Atlas)"], abilities: ["신체 아드레날린 및 근육 파괴 내성 극대화형 인자", "신체 한계 수치 일시적 도핑형 인자", "신체 고중량 압박 견딤 및 하중 분산형 인자"], features: ["위기 상황일수록 고통을 잊고 폭발적인 피지컬을 발휘함.", "순간적인 신체 오버클럭을 통해 한계를 뛰어넘는 힘을 냄.", "상당한 신체적 과부하와 물리적 압박에도 동요 없이 견뎌냄."] },
+        { name: "은밀·감각 회피계", dept: "🏢 CEO직속 전속 인자케어팀", deities: ["하데스 (Hades)", "다프네 (Daphne)", "판 (Pan)"], abilities: ["신체 은폐 및 시각 인식 차단형 인자", "타인의 시선을 신체적으로 회피하는 본능형 인자", "초음파 및 미세 음파 감지형 인자"], features: ["자신의 존재감을 순간적으로 지워 무의식적 시선 추적을 피함.", "자신에게 쏠리는 타인의 위압적 시선을 자연스럽게 튕겨냄.", "미세한 소리나 진동의 원인지를 직관적으로 찾아냄."] },
+        { name: "원거리·동체시력계", dept: "💋 에이전시·트렌드 사업부", deities: ["아르테미스 (Artemis)", "헬리오스 (Helios)", "니케 (Nike)"], abilities: ["동체시력 및 원거리 신체 직관 강화형 인자", "시야 내 빛을 흡수 및 반사하는 광학 감각형 인자", "승패의 기류를 감지하는 순발력 강화형 인자"], features: ["어두운 곳이나 복잡한 구조 속에서도 정밀한 목표물을 타격함.", "주변 시각 데이터를 극대화하여 미세한 미동도 놓치지 않음.", "경쟁 상황에서 승리 가능성이 가장 높은 선택지를 직관적으로 파악함."] },
+        { name: "생체·유기 활성화계", dept: "💄 뷰티·패션 사업부", deities: ["데메테르 (Demeter)", "페르세포네 (Persephone)", "테티스 (Thetis)"], abilities: ["생체 에너지를 통한 유기물 활성화형 인자", "동면·치유 주기를 유도하는 신체 조율형 인자", "체온 동결 및 피부 내구성 강화형 인자"], features: ["식물이나 세포 생체 에너지를 미세하게 촉진시킬 수 있음.", "상대의 극심한 인자 과부하 상태를 일시적으로 동면시키듯 가라앉힘.", "마찰열이나 과부하 열기를 순식간에 차갑게 식혀버림."] },
+        { name: "위계·통합 지배계", dept: "💋 에이전시·트렌드 사업부", deities: ["제우스 (Zeus)", "헤라 (Hera)", "포세이돈 (Poseidon)"], abilities: ["전자기파 직관 및 신체 반응 가속형 인자", "타인의 계급·지배 구조 인지 및 권위 부여형 인자", "유체 흐름 및 환경 파동 감응형 인자"], features: ["찰나의 순간에 고전압 전자기파와 유사한 반응 속도를 끌어올림.", "사내의 미세한 위계 질서와 조직 구조를 직관적으로 파악함.", "주변 환경의 기압이나 수분 변화를 피부 감각으로 감지함."] },
+        { name: "심리 교란·추적계", dept: "💋 에이전시·트렌드 사업부", deities: ["에리스 (Eris)", "헤카테 (Hekate)", "클리티에 (Clytie)", "아폴론 (Apollon)"], abilities: ["상대의 심리적 불안을 유도하는 감각 교란형 인자", "미세한 사각지대를 감지하는 감각 확장형 인자", "특정 대상의 위치를 시각적으로 감지하는 추적형 인자", "생체 바이오리듬 시각화 및 정교한 예지형 인자"], features: ["집단 내의 미세한 불화나 논리적 허점을 재빠르게 포착함.", "직관적으로 시스템의 숨겨진 백도어나 오류 위치를 찾아냄.", "특정 대상의 이동 경로나 신체 잔향을 끊임없이 추적함.", "상대의 미세한 체온 및 맥박 변화를 눈으로 스캔하듯 읽어냄."] }
     ];
 
     function generateData() {
-        const item = deityList[Math.floor(Math.random() * deityList.length)];
+        const selectedGroup = groups[Math.floor(Math.random() * groups.length)];
+        const randDeity = selectedGroup.deities[Math.floor(Math.random() * selectedGroup.deities.length)];
+        const randAbility = selectedGroup.abilities[Math.floor(Math.random() * selectedGroup.abilities.length)];
+        const randFeature = selectedGroup.features[Math.floor(Math.random() * selectedGroup.features.length)];
 
-        document.getElementById('deity').innerText = item.deity;
-        document.getElementById('identity').innerText = item.identity;
-        document.getElementById('ability').innerText = item.ability;
-        document.getElementById('feature').innerText = item.feature;
+        const deityDetail = deityDB[randDeity] || {
+            identity: "신성 인자 보유자",
+            good: "비너스 계통", goodDesc: "과부하 완화",
+            bad: "충돌 계통", badDesc: "파동 오작동"
+        };
 
-        document.getElementById('good-target').innerText = item.good;
-        document.getElementById('good-desc').innerText = item.goodDesc;
-        document.getElementById('bad-target').innerText = item.bad;
-        document.getElementById('bad-desc').innerText = item.badDesc;
+        document.getElementById('deity').innerText = randDeity;
+        document.getElementById('identity').innerText = deityDetail.identity;
+        document.getElementById('ability').innerText = randAbility;
+        document.getElementById('feature').innerText = randFeature;
+
+        document.getElementById('good-target').innerText = deityDetail.good;
+        document.getElementById('good-desc').innerText = deityDetail.goodDesc;
+        document.getElementById('bad-target').innerText = deityDetail.bad;
+        document.getElementById('bad-desc').innerText = deityDetail.badDesc;
+
+        document.getElementById('recommend-dept').innerText = selectedGroup.dept;
 
         const tagElem = document.getElementById('group-tag');
-        tagElem.innerText = item.group;
+        tagElem.innerText = selectedGroup.name;
         tagElem.style.display = 'inline-block';
 
         document.getElementById('affinity-box').style.display = 'block';
+        document.getElementById('dept-box').style.display = 'block';
     }
 
-    // 클립보드 복사 기능
     function copyResult() {
         const deity = document.getElementById('deity').innerText;
-        
         if (deity === "버튼을 눌러 진단하세요") {
             alert("먼저 인자를 진단해 주세요!");
             return;
@@ -538,6 +243,7 @@
         const goodDesc = document.getElementById('good-desc').innerText;
         const badTarget = document.getElementById('bad-target').innerText;
         const badDesc = document.getElementById('bad-desc').innerText;
+        const recommendDept = document.getElementById('recommend-dept').innerText;
 
         const textToCopy = `[비너스 그룹 신성인자 진단 결과]
 - 신성인자: ${deity} (${groupTag})
@@ -547,14 +253,15 @@
 
 [상성 리포트]
 - 상성 우수(Good): ${goodTarget} (${goodDesc})
-- 상성 충돌(Bad): ${badTarget} (${badDesc})`;
+- 상성 충돌(Bad): ${badTarget} (${badDesc})
+
+[추천 배치 부서]
+${recommendDept}`;
 
         navigator.clipboard.writeText(textToCopy).then(() => {
             const copyBtn = document.getElementById('copy-btn');
             copyBtn.innerText = "복사 완료!";
-            setTimeout(() => {
-                copyBtn.innerText = "내용복사";
-            }, 2000);
+            setTimeout(() => { copyBtn.innerText = "내용복사"; }, 2000);
         }).catch(err => {
             alert("복사 실패: " + err);
         });
@@ -563,5 +270,3 @@
 
 </body>
 </html>
-
-```
