@@ -15,6 +15,7 @@
             min-height: 100vh;
             margin: 0;
             padding: 20px;
+            box-sizing: border-box;
         }
         .container {
             background-color: #1e1e1e;
@@ -115,6 +116,13 @@
             line-height: 1.2;
         }
 
+        /* 추천 배치 부서 영역 스타일 */
+        .dept-section {
+            border-top: 1px dashed #444;
+            padding-top: 12px;
+            margin-top: 12px;
+        }
+
         /* 버튼 그룹 스타일 */
         .btn-group {
             display: flex;
@@ -166,6 +174,7 @@
         <div class="label" style="margin-top: 10px;">주요 특징</div>
         <div class="desc" id="feature">-</div>
 
+        <!-- 인자 상성 리포트 -->
         <div class="affinity-section" id="affinity-box" style="display:none;">
             <div class="label">인자 상성 리포트</div>
             <div class="affinity-grid">
@@ -181,9 +190,15 @@
                 </div>
             </div>
         </div>
+
+        <!-- 추천 배치 부서 (상성 리포트 하단 배치) -->
+        <div class="dept-section" id="dept-box" style="display:none;">
+            <div class="label">추천배치부서</div>
+            <div class="value" id="department" style="color: #60a5fa; font-size: 1.05rem;">-</div>
+        </div>
     </div>
 
-    <!-- 버튼 영역 (측정하기 + 내용복사) -->
+    <!-- 버튼 영역 -->
     <div class="btn-group">
         <button class="btn-main" onclick="generateData()">인자 측정하기</button>
         <button class="btn-copy" id="copy-btn" onclick="copyResult()">내용복사</button>
@@ -275,7 +290,7 @@
         "다프네 (Daphne)": {
             identity: "드라이아스 님프 · 월계수와 도피의 정령",
             good: "헤스티아", goodDesc: "정적 속 완벽한 안식처 제공",
-            bad: "아폴론", badDesc: "추적 추적 파동에 의한 위치 강제 노출"
+            bad: "아폴론", badDesc: "추적 파동에 의한 위치 강제 노출"
         },
         "판 (Pan)": {
             identity: "야생과 숲의 신 · 공포(Panic)의 정령",
@@ -362,7 +377,8 @@
                 "시스템이나 물건의 미세한 구조적 균열을 즉시 파악해 냄.",
                 "방대한 도면이나 데이터를 보는 즉시 입체적 청사진으로 재구성함.",
                 "남들이 보지 못하는 치명적 시스템 결함을 동물적으로 감지함."
-            ]
+            ],
+            departments: ["메카닉 개발실", "특수 장비 관리팀", "시스템 보안 본부"]
         },
         {
             name: "신호·네트워크계",
@@ -376,7 +392,8 @@
                 "상대방의 미세한 두근거림이나 심장박동을 피부 감각으로 읽음.",
                 "들었던 소리나 데이터 파형을 그대로 기억하여 완벽히 재현함.",
                 "공기의 미세한 유동을 피부로 느껴 미세한 신호 전달 경로를 파악함."
-            ]
+            ],
+            departments: ["전략 정보 네트워크팀", "음향 정찰 특작대", "비밀 통신 관리실"]
         },
         {
             name: "페로몬·매혹계",
@@ -390,7 +407,8 @@
                 "특유의 치명적인 체향으로 타인의 감정을 순간적으로 동요시킴.",
                 "타인의 감각을 마비시키거나 순간적으로 극도의 흥분 상태로 몰아넣음.",
                 "상대에게 정서적 안도감과 극도의 애착을 형성하게 만듦."
-            ]
+            ],
+            departments: ["대외 정서 관리팀", "비밀 교섭 대응실", "VIP 케어 특공대"]
         },
         {
             name: "치유·안정계",
@@ -404,7 +422,8 @@
                 "특유의 온기와 체향으로 상대의 인자 과부하 상태를 유일하게 완화시킴.",
                 "상대방의 신체 이상이나 인자 오작동 원인을 즉시 진단해 냄.",
                 "차가운 환경에서도 자율 체온을 일정하게 유지하며 주위를 안정시킴."
-            ]
+            ],
+            departments: ["인자 과부하 의료원", "생체 바이오 케어팀", "중앙 안식 지원 센터"]
         },
         {
             name: "전투·강화계",
@@ -418,7 +437,8 @@
                 "위기 상황일수록 고통을 잊고 폭발적인 피지컬을 발휘함.",
                 "순간적인 신체 오버클럭을 통해 한계를 뛰어넘는 힘을 냄.",
                 "상당한 신체적 과부하와 물리적 압박에도 동요 없이 견뎌냄."
-            ]
+            ],
+            departments: ["중장비 타격 특전대", "특수 물리 제어팀", "최전선 기동 타격대"]
         },
         {
             name: "은밀·감각 회피계",
@@ -432,7 +452,8 @@
                 "자신의 존재감을 순간적으로 지워 무의식적 시선 추적을 피함.",
                 "자신에게 쏠리는 타인의 위압적 시선을 자연스럽게 튕겨냄.",
                 "미세한 소리나 진동의 원인지를 직관적으로 찾아냄."
-            ]
+            ],
+            departments: ["음영 정찰 특전대", "비밀 정보 회수팀", "사각지대 침투반"]
         },
         {
             name: "원거리·동체시력계",
@@ -446,7 +467,8 @@
                 "어두운 곳이나 복잡한 구조 속에서도 정밀한 목표물을 타격함.",
                 "주변 시각 데이터를 극대화하여 미세한 미동도 놓치지 않음.",
                 "경쟁 상황에서 승리 가능성이 가장 높은 선택지를 직관적으로 파악함."
-            ]
+            ],
+            departments: ["원거리 정밀 저격대", "광학 시각 제어팀", "작전 승리 전략실"]
         },
         {
             name: "생체·유기 활성화계",
@@ -460,7 +482,8 @@
                 "식물이나 세포 생체 에너지를 미세하게 촉진시킬 수 있음.",
                 "상대의 극심한 인자 과부하 상태를 일시적으로 동면시키듯 가라앉힘.",
                 "마찰열이나 과부하 열기를 순식간에 차갑게 식혀버림."
-            ]
+            ],
+            departments: ["생체 에너지 연구소", "인자 동면 재활센터", "열각 자율 제어팀"]
         },
         {
             name: "위계·통합 지배계",
@@ -474,7 +497,8 @@
                 "찰나의 순간에 고전압 전자기파와 유사한 반응 속도를 끌어올림.",
                 "사내의 미세한 위계 질서와 조직 구조를 직관적으로 파악함.",
                 "주변 환경의 기압이나 수분 변화를 피부 감각으로 감지함."
-            ]
+            ],
+            departments: ["비너스 최고 이사회", "사내 질서 감찰국", "중앙 환경 제어본부"]
         },
         {
             name: "심리 교란·추적계",
@@ -490,7 +514,8 @@
                 "직관적으로 시스템의 숨겨진 백도어나 오류 위치를 찾아냄.",
                 "특정 대상의 이동 경로나 신체 잔향을 끊임없이 추적함.",
                 "상대의 미세한 체온 및 맥박 변화를 눈으로 스캔하듯 읽어냄."
-            ]
+            ],
+            departments: ["심리 전략 분석실", "특수 추적 수사팀", "예지 정찰 본부"]
         }
     ];
 
@@ -500,6 +525,7 @@
         const randDeity = selectedGroup.deities[Math.floor(Math.random() * selectedGroup.deities.length)];
         const randAbility = selectedGroup.abilities[Math.floor(Math.random() * selectedGroup.abilities.length)];
         const randFeature = selectedGroup.features[Math.floor(Math.random() * selectedGroup.features.length)];
+        const randDept = selectedGroup.departments[Math.floor(Math.random() * selectedGroup.departments.length)];
 
         const deityDetail = deityDB[randDeity] || {
             identity: "신성 인자 보유자",
@@ -517,11 +543,14 @@
         document.getElementById('bad-target').innerText = deityDetail.bad;
         document.getElementById('bad-desc').innerText = deityDetail.badDesc;
 
+        document.getElementById('department').innerText = randDept;
+
         const tagElem = document.getElementById('group-tag');
         tagElem.innerText = selectedGroup.name;
         tagElem.style.display = 'inline-block';
 
         document.getElementById('affinity-box').style.display = 'block';
+        document.getElementById('dept-box').style.display = 'block';
     }
 
     // 클립보드 복사 기능
@@ -541,8 +570,8 @@
         const goodDesc = document.getElementById('good-desc').innerText;
         const badTarget = document.getElementById('bad-target').innerText;
         const badDesc = document.getElementById('bad-desc').innerText;
+        const department = document.getElementById('department').innerText;
 
-        // 유저노트에 붙여넣기 적합한 텍스트 템플릿
         const textToCopy = `[비너스 그룹 신성인자 진단 결과]
 - 신성인자: ${deity} (${groupTag})
 - 정체성: ${identity}
@@ -551,7 +580,10 @@
 
 [상성 리포트]
 - 상성 우수(Good): ${goodTarget} (${goodDesc})
-- 상성 충돌(Bad): ${badTarget} (${badDesc})`;
+- 상성 충돌(Bad): ${badTarget} (${badDesc})
+
+[추천배치부서]
+${department}`;
 
         navigator.clipboard.writeText(textToCopy).then(() => {
             const copyBtn = document.getElementById('copy-btn');
